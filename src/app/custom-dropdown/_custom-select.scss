@@ -22,9 +22,16 @@
       padding-bottom: 2px;
       outline: 0;
       cursor: pointer;
+      font-size: inherit;
 
       &:focus {
         border-bottom: 2px solid #0079cc;
+      }
+
+      &:disabled {
+        cursor: default;
+        color: #93a1aa;
+        border-bottom: solid 1px #93a1aa;
       }
 
       &:disabled + .dropdown-arrow {
@@ -38,6 +45,14 @@
       right: 0;
       bottom: 0;
       cursor: pointer;
+    }
+
+    &.required label:after {
+      color: red;
+      content: "*";
+      position: relative;
+      left: 5px;
+      bottom: 5px;
     }
   }
 }

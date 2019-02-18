@@ -64,8 +64,6 @@ export class CustomSelectComponent implements AfterViewInit, ControlValueAccesso
 
   public onTouchedFn = () => {};
 
-  private initialized = false;
-
   private keyManager: ActiveDescendantKeyManager<CustomSelectOptionComponent>;
 
   constructor(private dropdownService: CustomDropdownService) {
@@ -74,7 +72,6 @@ export class CustomSelectComponent implements AfterViewInit, ControlValueAccesso
 
   public ngAfterViewInit() {
     setTimeout(() => {
-      this.initialized = true;
       this.selectedOption = this.options.toArray().find(option => option.key === this.selected);
       this.displayText = this.selectedOption ? this.selectedOption.value : '';
       this.keyManager = new ActiveDescendantKeyManager(this.options)

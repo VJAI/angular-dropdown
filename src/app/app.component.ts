@@ -6,4 +6,6 @@ import { Component } from '@angular/core';
   styleUrls: ['./_app.scss']
 })
 export class AppComponent {
+
+  public selectedDestination: string;
 }
