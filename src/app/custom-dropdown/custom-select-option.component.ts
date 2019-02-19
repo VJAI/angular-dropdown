@@ -3,15 +3,10 @@ import { Component, forwardRef, HostBinding, HostListener, Input } from '@angula
 import { CustomDropdownService } from './custom-dropdown.service';
 import { CustomSelectComponent } from './custom-select.component';
 
-export abstract class Child {}
-
 @Component({
   selector: 'custom-select-option',
   template: '{{value}}',
-  styleUrls: ['./_custom-select-option.scss'],
-  providers: [
-    { provide: Child, useExisting: forwardRef(() => CustomSelectOptionComponent) }
-  ]
+  styleUrls: ['./_custom-select-option.scss']
 })
 export class CustomSelectOptionComponent implements Highlightable {
 

@@ -24,10 +24,7 @@ import { DropdownComponent } from './dropdown.component';
       useExisting: forwardRef(() => CustomSelectComponent),
       multi: true
     },
-    {
-      provide: CustomDropdownService,
-      useClass: CustomDropdownService
-    }
+    CustomDropdownService
   ]
 })
 export class CustomSelectComponent implements AfterViewInit, ControlValueAccessor {

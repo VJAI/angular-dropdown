@@ -28,7 +28,7 @@ export class DropdownComponent {
     this.overlayRef = this.overlay.create(this.getOverlayConfig());
     this.overlayRef.attach(this.contentTemplate);
     this.syncWidth();
-    this.overlayRef.backdropClick().subscribe(() => this.overlayRef.detach());
+    this.overlayRef.backdropClick().subscribe(() => this.hide());
     this.showing = true;
   }
 

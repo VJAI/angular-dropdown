@@ -7,7 +7,6 @@ import { PortalModule } from '@angular/cdk/portal';
 import { CustomSelectComponent } from './custom-dropdown/custom-select.component';
 import { CustomSelectOptionComponent } from './custom-dropdown/custom-select-option.component';
 import { DropdownComponent } from './custom-dropdown/dropdown.component';
-import { CustomDropdownService } from './custom-dropdown/custom-dropdown.service';
 
 import { AppComponent } from './app.component';
 
@@ -23,9 +22,6 @@ import { AppComponent } from './app.component';
     FormsModule,
     OverlayModule,
     PortalModule
-  ],
-  providers: [
-    CustomDropdownService
   ],
   bootstrap: [AppComponent]
 })
