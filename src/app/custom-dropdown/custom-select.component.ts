@@ -72,6 +72,8 @@ export class CustomSelectComponent implements AfterViewInit, ControlValueAccesso
       this.selectedOption = this.options.toArray().find(option => option.key === this.selected);
       this.displayText = this.selectedOption ? this.selectedOption.value : '';
       this.keyManager = new ActiveDescendantKeyManager(this.options)
+        .withHorizontalOrientation('ltr')
+        .withVerticalOrientation()
         .withWrap();
     });
   }
@@ -118,16 +120,11 @@ export class CustomSelectComponent implements AfterViewInit, ControlValueAccesso
       this.onChange();
     } else if (event.key === 'Escape' || event.key === 'Esc') {
       this.dropdown.showing && this.hideDropdown();
-    } else if (event.key === 'ArrowDown' || event.key === 'Down') {
+    } else if (['ArrowUp', 'Up', 'ArrowDown', 'Down', 'ArrowRight', 'Right', 'ArrowLeft', 'Left']
+      .indexOf(event.key) > -1) {
       this.keyManager.onKeydown(event);
-      event.preventDefault();
-    } else if (event.key === 'ArrowUp' || event.key === 'Up') {
-      this.keyManager.onKeydown(event);
-      event.preventDefault();
     } else if (event.key === 'PageUp' || event.key === 'PageDown' || event.key === 'Tab') {
       this.dropdown.showing && event.preventDefault();
-    } else {
-      event.preventDefault();
     }
   }
 
@@ -137,12 +134,8 @@ export class CustomSelectComponent implements AfterViewInit, ControlValueAccesso
     this.selectedOption = option;
     this.displayText = this.selectedOption ? this.selectedOption.value : '';
     this.hideDropdown();
-    this.focus();
-    this.onChange();
-  }
-
-  public focus() {
     this.input.nativeElement.focus();
+    this.onChange();
   }
 
   public registerOnChange(fn: any): void {
