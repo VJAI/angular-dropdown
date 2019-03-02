@@ -115,6 +115,7 @@ export class CustomSelectComponent implements AfterViewInit, ControlValueAccesso
 
     if (event.key === 'Enter' || event.key === ' ') {
       this.selectedOption = this.keyManager.activeItem;
+      this.selected = this.selectedOption.key;
       this.displayText = this.selectedOption ? this.selectedOption.value : '';
       this.hideDropdown();
       this.onChange();
