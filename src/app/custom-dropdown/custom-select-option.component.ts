@@ -5,7 +5,7 @@ import { CustomSelectComponent } from './custom-select.component';
 
 @Component({
   selector: 'custom-select-option',
-  template: '{{value}}',
+  template: '<input type="checkbox" *ngIf="showCheckbox" [checked]="selected" />{{value}}',
   styleUrls: ['./_custom-select-option.scss']
 })
 export class CustomSelectOptionComponent implements Highlightable {
@@ -18,7 +18,11 @@ export class CustomSelectOptionComponent implements Highlightable {
 
   @HostBinding('class.selected')
   public get selected(): boolean {
-    return this.select.selectedOption === this;
+    return this.select && (this.select.selectedOption.indexOf(this) !== -1);
+  }
+
+  public get showCheckbox(): boolean {
+    return this.select && this.select.multi;
   }
 
   @HostBinding('class.active')

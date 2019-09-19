@@ -29,6 +29,10 @@ import { DropdownComponent } from './dropdown.component';
 })
 export class CustomSelectComponent implements AfterViewInit, ControlValueAccessor {
 
+  constructor(private dropdownService: CustomDropdownService) {
+    this.dropdownService.register(this);
+  }
+
   @Input()
   public label: string;
 
@@ -36,7 +40,7 @@ export class CustomSelectComponent implements AfterViewInit, ControlValueAccesso
   public placeholder: string;
 
   @Input()
-  public selected: string;
+  public selected: string[] = [];
 
   @Input()
   public required = false;
@@ -44,33 +48,33 @@ export class CustomSelectComponent implements AfterViewInit, ControlValueAccesso
   @Input()
   public disabled = false;
 
-  @ViewChild('input')
+  @Input()
+  public multi = false;
+
+  @ViewChild('input', { static: true })
   public input: ElementRef;
 
-  @ViewChild(DropdownComponent)
+  @ViewChild(DropdownComponent, { static: true })
   public dropdown: DropdownComponent;
 
   @ContentChildren(CustomSelectOptionComponent)
   public options: QueryList<CustomSelectOptionComponent>;
 
-  public selectedOption: CustomSelectOptionComponent;
+  public selectedOption: CustomSelectOptionComponent[] = [];
 
   public displayText: string;
 
-  public onChangeFn = (_: any) => {};
-
-  public onTouchedFn = () => {};
-
   private keyManager: ActiveDescendantKeyManager<CustomSelectOptionComponent>;
 
-  constructor(private dropdownService: CustomDropdownService) {
-    this.dropdownService.register(this);
-  }
+  public onChangeFn = (_: any) => { };
+
+  public onTouchedFn = () => { };
 
   public ngAfterViewInit() {
     setTimeout(() => {
-      this.selectedOption = this.options.toArray().find(option => option.key === this.selected);
-      this.displayText = this.selectedOption ? this.selectedOption.value : '';
+      if ( !this.selected ) { this.selected = []; }
+      this.selectedOption = this.options.toArray().filter(option => this.selected.indexOf(option.key) !== -1);
+      this.displayText = this.createDisplayText();
       this.keyManager = new ActiveDescendantKeyManager(this.options)
         .withHorizontalOrientation('ltr')
         .withVerticalOrientation()
@@ -78,14 +82,25 @@ export class CustomSelectComponent implements AfterViewInit, ControlValueAccesso
     });
   }
 
+  public createDisplayText() {
+    if (this.multi) {
+      let toReturn = '';
+      if (this.selectedOption.length > 0) {
+        this.selectedOption.forEach((option: CustomSelectOptionComponent, index) => {
+          if (option) { toReturn = toReturn + option.value + ((index === this.selectedOption.length - 1) ? '' : ', '); }
+        });
+      }
+      return toReturn;
+    } else {
+      return this.selectedOption.length > 0 && this.selectedOption[0] ? this.selectedOption[0].value : '';
+    }
+  }
+
   public showDropdown() {
     this.dropdown.show();
-
     if (!this.options.length) {
       return;
     }
-
-    this.selected ? this.keyManager.setActiveItem(this.selectedOption) : this.keyManager.setFirstItemActive();
   }
 
   public hideDropdown() {
@@ -114,10 +129,10 @@ export class CustomSelectComponent implements AfterViewInit, ControlValueAccesso
     }
 
     if (event.key === 'Enter' || event.key === ' ') {
-      this.selectedOption = this.keyManager.activeItem;
-      this.selected = this.selectedOption.key;
-      this.displayText = this.selectedOption ? this.selectedOption.value : '';
-      this.hideDropdown();
+      const option = this.keyManager.activeItem;
+      this.changeOption(option);
+      this.displayText = this.createDisplayText();
+      if (!this.multi) { this.hideDropdown(); }
       this.onChange();
     } else if (event.key === 'Escape' || event.key === 'Esc') {
       this.dropdown.showing && this.hideDropdown();
@@ -129,12 +144,27 @@ export class CustomSelectComponent implements AfterViewInit, ControlValueAccesso
     }
   }
 
+  public changeOption(option: CustomSelectOptionComponent) {
+    const index = this.selectedOption.indexOf(option);
+    if (!this.multi) {
+      this.selectedOption[0] = option;
+      this.selected[0] = option.key;
+    } else {
+      if (index === -1) {
+        this.selectedOption.push(option);
+        this.selected.push(option.key);
+      } else {
+        this.selectedOption.splice(index, 1);
+        this.selected.splice(index, 1);
+      }
+    }
+  }
+
   public selectOption(option: CustomSelectOptionComponent) {
     this.keyManager.setActiveItem(option);
-    this.selected = option.key;
-    this.selectedOption = option;
-    this.displayText = this.selectedOption ? this.selectedOption.value : '';
-    this.hideDropdown();
+    this.changeOption(option);
+    this.displayText = this.createDisplayText();
+    if (!this.multi) { this.hideDropdown(); }
     this.input.nativeElement.focus();
     this.onChange();
   }

@@ -8,4 +8,5 @@ import { Component } from '@angular/core';
 export class AppComponent {
 
   public selectedDestination: string;
+  public selectedDestination2: string;
 }
